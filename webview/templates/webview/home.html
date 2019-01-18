@@ -30,11 +30,63 @@
                 <input type="submit" value="Add">
             </form>
 
+            <h3>Select a city to display list of all users</h3><select id="selectUse" onchange="getUserList(this)">
+        <option value="None">...</option>
+                {% for city in cities %}
+
+                    <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+        <table id="userList" style="display: none">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+        </table>
         </section>
 
     {% else %}
 
     {% endif %}
     {#{% if request.user|isMember : "admin" %}#}
+<script>
+function getUserList(e) {
+    var url = "{% url 'pvrusers' %}" + "?city=" + e.value;
 
+    var table = document.getElementById("userList");
+
+var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    {#document.getElementById("demo").innerHTML = this.responseText;#}
+      console.log(this.responseText);
+    var data = JSON.parse(this.responseText);
+    console.log(data);
+    for (i=0;i<data["data"].length;i++){
+        var row = document.createElement("tr");
+        var d1 = document.createElement("td");
+        var d2 = document.createElement("td");
+        var d3 = document.createElement("td");
+        d1.innerText = data["data"][i]["fname"];
+        d2.innerText = data["data"][i]["lname"];
+        d3.innerText = data["data"][i]["email"];
+        row.appendChild(d1);
+        row.appendChild(d2);
+        row.appendChild(d3);
+        table.appendChild(row);
+    }
+    table.style.display = "block";
+  }
+};
+xhttp.open("GET", url, true);
+xhttp.send();
+
+console.log(e.value);
+}
+
+
+</script>
 {% endblock %}
