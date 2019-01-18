@@ -1,19 +1,24 @@
 from django.shortcuts import render, redirect
 from webview.src import database as db
+from django.contrib.auth.forms import UserCreationForm
 from webview.models import userForm
 # Create your views here.
+context_global = {}
+context_global["cities"] = db.getAllCititesName()
+context_global["userForm"] = userForm()
+context_global["adminForm"] = UserCreationForm()
+
 def home(request) :
+    context = context_global.copy()
     if request.user.is_authenticated:
-        context = {}
-        context["cities"] = db.getAllCititesName()
-        context["userForm"] = userForm()
+
         return render(request, "webview/home.html", context)
     else :
         return redirect('login')
 
 
 def pvrusers(request) :
-    context = {}
+    context = context_global.copy()
     context["userForm"] = userForm()
     if request.method == "POST" :
         form = userForm(request.POST)
@@ -22,4 +27,17 @@ def pvrusers(request) :
             context["alert"] = "User Added Successfully"
         else :
             context["alert"] = "There are some issues with the form data. Please check again"
+    return render(request, "webview/home.html", context)
+
+
+def addNewAdmin(request) :
+    context = context_global.copy()
+    if request.method == "POST" :
+        form = UserCreationForm(request.POST)
+        if form.is_valid() :
+            form.save()
+            context["alert"] = "New admin user created successfully"
+        else :
+            context["alert"] = "There are some issues with the form data. Please check again"
+
     return render(request, "webview/home.html", context)

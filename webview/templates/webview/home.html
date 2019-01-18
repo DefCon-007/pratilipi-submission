@@ -13,6 +13,14 @@
 
 
     {% if request.user.is_authenticated %}
+         <h2>Add new admin</h2>
+  <form method="post", action="{% url 'adminusers' %}">
+    {% csrf_token %}
+    {{ adminForm.as_p }}
+    <button type="submit">Add new admin</button>
+  </form>
+
+
         <section id = "user">
         <h1>Users</h1>
     <h3>Add New User</h3>
