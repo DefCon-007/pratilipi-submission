@@ -1,0 +1,32 @@
+{% extends "webview/base.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block body%}
+    {% if alert %}
+        <script>
+        alert("{{ alert }}")
+        </script>
+    {% endif %}
+    <a href="{% url 'logout' %}">Logout</a>
+
+
+    {% if request.user.is_authenticated %}
+        <section id = "user">
+        <h1>Users</h1>
+    <h3>Add New User</h3>
+            <form action="{% url 'pvrusers' %}" method="post">
+                {% csrf_token %}
+                {{ userForm }}
+                <input type="submit" value="Add">
+            </form>
+
+        </section>
+
+    {% else %}
+
+    {% endif %}
+    {#{% if request.user|isMember : "admin" %}#}
+
+{% endblock %}
