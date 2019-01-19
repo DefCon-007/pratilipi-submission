@@ -1,0 +1,59 @@
+{% extends "webview/base.html" %}
+{% block title %}Users{% endblock %}
+
+{% block body %}
+    <h3>Users in the {{ city }} city</h3>
+    <div style="display: none" id="uDiv">
+        <input type="text", id="subject" placeholder="Enter Subject">
+        <input type="text", id="body" placeholder="Enter Body">
+        <input type="hidden" id="email">
+        <button onclick="sendMail()">Send</button>
+    </div>
+      <table id="userList">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                {% for data in  userList%}
+            <tr>
+                <td>{{  data.fname}}</td>
+                <td>{{  data.lname}}</td>
+                <td>{{ data.email }}</td>
+                <td><button onclick="changeMail('{{ data.email }}')"> Send Mail</button></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+<script>
+function sendMail(e) {
+        var sub = document.getElementById("subject").value
+    var body =  document.getElementById("body").value
+    var email =  document.getElementById("email").value
+    var url = "{% url 'singlemail' %}" + "?mail=" + email + "&sub=" + sub + "&body="+body;
+
+      var xhttp1= new XMLHttpRequest();
+    xhttp1.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                      {#document.getElementById("demo").innerHTML = this.responseText;#}
+                      alert(this.responseText);
+                  }
+
+};
+
+xhttp1.open("GET", url, true);
+    xhttp1.send();
+}
+
+function changeMail(e) {
+    var elem = document.getElementById("uDiv");
+    elem.style.display = "block";
+    var email = document.getElementById("email").value = e;
+}
+</script>
+    {% endblock %}

@@ -4,6 +4,8 @@ from webview.src import database as db
 from django.contrib.auth.forms import UserCreationForm
 from webview.models import userForm
 import json
+from webview.src import utils
+
 # Create your views here.
 context_global = {}
 context_global["cities"] = db.getAllCititesName()
@@ -31,11 +33,9 @@ def pvrusers(request) :
             context["alert"] = "There are some issues with the form data. Please check again"
     else :
         cityName  = request.GET.get('city')
-        res = json.dumps({"data" : db.getAllUsersByCity(cityName)})
-        if len(res) >=1 :
-            return HttpResponse(res, status=200)
-        else :
-            return HttpResponse(status=404)
+        print(cityName)
+        context["userList"] = db.getAllUsersByCity(cityName)
+        return render(request, "webview/users.html" , context)
     return render(request, "webview/home.html", context)
 
 
@@ -50,3 +50,13 @@ def addNewAdmin(request) :
             context["alert"] = "There are some issues with the form data. Please check again"
 
     return render(request, "webview/home.html", context)
+
+
+def sendSingleMail(request) :
+    email  = request.GET.get('mail')
+    sub   = request.GET.get('sub')
+    body  = request.GET.get('body')
+
+    utils.sendSingleMail(email,sub,body)
+    print("Mail sent")
+    return HttpResponse("Email Sent Successfully")

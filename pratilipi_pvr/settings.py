@@ -71,7 +71,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pratilipi_pvr.wsgi.application'
-
+# EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = config.get("core", "SENDGRID_API")
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
