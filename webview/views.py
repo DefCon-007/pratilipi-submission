@@ -2,7 +2,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from webview.src import database as db
 from django.contrib.auth.forms import UserCreationForm
-from webview.models import userForm
+from webview.models import userForm, movieForm
 import json
 from webview.src import utils
 
@@ -11,7 +11,7 @@ context_global = {}
 context_global["cities"] = db.getAllCititesName()
 context_global["userForm"] = userForm()
 context_global["adminForm"] = UserCreationForm()
-
+context_global["movieForm"] = movieForm()
 def home(request) :
     context = context_global.copy()
     if request.user.is_authenticated:
@@ -60,3 +60,43 @@ def sendSingleMail(request) :
     utils.sendSingleMail(email,sub,body)
     print("Mail sent")
     return HttpResponse("Email Sent Successfully")
+
+def sendMovieNotification(request) :
+    sub   = request.GET.get('sub')
+    body  = request.GET.get('body')
+    city = request.GET.get('city')
+
+    emaiLlist = db.getAllUserEmailListByCity(city)
+
+    print(emaiLlist)
+    if len(emaiLlist) == 0 :
+        return HttpResponse("No users in the city")
+    try :
+        utils.sendMultipleMails(emaiLlist, sub,body)
+        return HttpResponse("Emails Sent Successfully")
+    except :
+        return HttpResponse("unable to send emails please try again")
+
+def movie(request) :
+    context = context_global.copy()
+    if request.method == "POST" :
+        form = movieForm(request.POST)
+        if form.is_valid() :
+            form.save()
+            context["alert"] = "Movie Added Successfully"
+        else :
+            context["alert"] = "There are some issues with the form data. Please check again"
+        #Adding new movie
+        return render(request, "webview/home.html", context)
+
+    cityName = request.GET.get('city')
+    context["movie"] =  db.getAllMoviesByCityName(cityName)
+
+    print(context["movie"] )
+    if cityName :
+        context["city"] = cityName
+        return render(request, "webview/movie.html", context)
+    else :
+        return render(request, "webview/movie.html")
+
+

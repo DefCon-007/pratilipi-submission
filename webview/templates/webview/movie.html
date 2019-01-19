@@ -1,0 +1,71 @@
+{% extends 'webview/base.html' %}
+
+{% block title %}Movie{% endblock %}
+{% block body %}
+{% if alert %}
+        <script>
+        alert("{{ alert }}")
+        </script>
+    {% endif %}
+
+    {% if movie %}
+        <h3>Movies in the {{ city }} city</h3>
+        <div style="display: none" id="uDiv">
+            <label for="to">Movie Name  : </label>
+            <input type="text" id="to" readonly>
+            <input type="text", id="subject" placeholder="Enter Subject">
+            <input type="text", id="body" placeholder="Enter Body">
+            <input type="hidden" id="city" value="{{ city }}">
+            <button onclick="sendMail()">Send</button>
+        </div>
+          <table id="userList">
+                <thead>
+                <tr>
+                    <th>Movie Name</th>
+{#                    <th>Last Name</th>#}
+{#                    <th>Email</th>#}
+                </tr>
+                </thead>
+
+                <tbody>
+                    {% for data in  movie%}
+                <tr>
+                    <td>{{  data.name}}</td>
+{#                    <td>{{  data.lname}}</td>#}
+{#                    <td>{{ data.email }}</td>#}
+                    <td><button onclick="changeMail('{{ data.name }}')"> Send Mail</button></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        <script>
+        function sendMail(e) {
+                var sub = document.getElementById("subject").value
+            var body =  document.getElementById("body").value
+            var city =  document.getElementById("city").value
+            var url = "{% url 'multipleemail' %}" + "?sub=" + sub + "&body="+body + "&city=" + city ;
+
+              var xhttp1= new XMLHttpRequest();
+            xhttp1.onreadystatechange = function() {
+                          if (this.readyState == 4 && this.status == 200) {
+                              {#document.getElementById("demo").innerHTML = this.responseText;#}
+                              alert(this.responseText);
+                          }
+
+        };
+
+        xhttp1.open("GET", url, true);
+            xhttp1.send();
+        }
+
+        function changeMail(e) {
+            var elem = document.getElementById("uDiv");
+            elem.style.display = "block";
+            document.getElementById("to").value = e;
+
+        }
+        </script>
+    {% else %}
+        <h2>Sorry No movies in the selected city.</h2>
+    {% endif %}
+{% endblock %}

@@ -40,6 +40,25 @@
 
         </section>
 
+
+        <section id="movie">
+                <h1>Movies</h1>
+    <h3>Add Movie</h3>
+            <form action="{% url 'movie' %}" method="post">
+                {% csrf_token %}
+                {{ movieForm }}
+                <input type="submit" value="Add">
+            </form>
+
+
+        <h3>Select a city to display list of all movies</h3><select id="selectMovie" onchange="getZMovieList(this)">
+        <option value="None">...</option>
+                {% for city in cities %}
+
+                    <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+        </section>
     {% else %}
 
     {% endif %}
@@ -74,45 +93,14 @@ function getUserList(e) {
     var url = "{% url 'pvrusers' %}" + "?city=" + e.value;
     var win = window.open(url, '_blank');
       win.focus();
-    var table = document.getElementById("userList");
-
-var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    {#document.getElementById("demo").innerHTML = this.responseText;#}
-      console.log(this.responseText);
-    var data = JSON.parse(this.responseText);
-    var sendMailSingleUser = document.getElementById("sendMailTag");
-
-    console.log(data);
-    for (i=0;i<data["data"].length;i++){
-        var row = document.createElement("tr");
-        var d1 = document.createElement("td");
-        var d2 = document.createElement("td");
-        var d3 = document.createElement("td");
-        var d4 = document.createElement("td");
-        var clone  = sendMailSingleUser.cloneNode(true);
-        clone.style.display = "block";
-        clone.firstChild.nextSibling.nextSibling.value = data["data"][i]["email"];
-        d1.innerText = data["data"][i]["fname"];
-        d2.innerText = data["data"][i]["lname"];
-        d3.innerText = data["data"][i]["email"];
-        d4.appendChild(clone);
-        row.appendChild(d1);
-        row.appendChild(d2);
-        row.appendChild(d3);
-        row.appendChild(d4);
-        table.appendChild(row);
-    }
-    table.style.display = "block";
-  }
-};
-xhttp.open("GET", url, true);
-xhttp.send();
-
 console.log(e.value);
 }
-
+function getZMovieList(e) {
+    var url = "{% url 'movie' %}" + "?city=" + e.value;
+    var win = window.open(url, '_blank');
+      win.focus();
+console.log(e.value);
+}
 
 </script>
 {% endblock %}

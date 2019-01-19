@@ -4,6 +4,8 @@
 {% block body %}
     <h3>Users in the {{ city }} city</h3>
     <div style="display: none" id="uDiv">
+        <label for="to">TO : </label>
+        <input type="text" id="to" readonly>
         <input type="text", id="subject" placeholder="Enter Subject">
         <input type="text", id="body" placeholder="Enter Body">
         <input type="hidden" id="email">
@@ -53,7 +55,8 @@ xhttp1.open("GET", url, true);
 function changeMail(e) {
     var elem = document.getElementById("uDiv");
     elem.style.display = "block";
-    var email = document.getElementById("email").value = e;
+    document.getElementById("email").value = e;
+    document.getElementById("to").value = e;
 }
 </script>
     {% endblock %}
