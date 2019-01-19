@@ -8,7 +8,10 @@ from webview.src import utils
 
 # Create your views here.
 context_global = {}
-context_global["cities"] = db.getAllCititesName()
+try :
+    context_global["cities"] = db.getAllCititesName()
+except :
+    pass
 context_global["userForm"] = userForm()
 context_global["adminForm"] = UserCreationForm()
 context_global["movieForm"] = movieForm()
